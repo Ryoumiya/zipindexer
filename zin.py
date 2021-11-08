@@ -18,22 +18,27 @@ def index_file(file):
                 listOfiles.append(member)
     return listOfiles
 
-def write_index(listOfiles):
-    with open("zipindex.txt", 'a') as f:
+def write_index(zipfile, listOfiles):
+    with open("zipindex.csv", 'a') as f:
         for item in listOfiles:
-            f.write(item + '\n')
+            f.write(str(zipfile) + "," + item + '\n')
 
 if args.file:
     index = index_file(args.file)
-    write_index(index)
+    write_index(args.file ,index)
 
 if args.dir:
     for file in Path(args.dir).rglob('*.zip'):
         index = index_file(file)
-        write_index(index)
+        write_index(file, index)
 
 if args.search:
-    with open("zipindex.txt", 'r') as f:
+    detected = []
+    with open("zipindex.csv", 'r') as f:
         for line in f:
-            if args.search in line:
-                print(line)
+            split = line.split(',')
+            if args.search in split[1]:
+                
+                if split[0] not in detected:
+                    print(split[0])
+                    detected.append(split[0])
